@@ -6,7 +6,7 @@
     :clipped-left="$vuetify.breakpoint.lgAndUp"
   >
     <v-app-bar-nav-icon @click.stop="$emit('hide', !show)"></v-app-bar-nav-icon>
-    <v-toolbar-title>{{user.name}}</v-toolbar-title>
+    <v-toolbar-title>{{title || 'Dashboard'}}</v-toolbar-title>
 
     <v-spacer />
     <v-btn icon>
@@ -34,6 +34,7 @@
 
 <script>
 import AuthService from '@/modules/auth/services/auth-service';
+import { mapState } from 'vuex';
 
 export default {
   name: 'AppToolbar',
@@ -49,6 +50,9 @@ export default {
   }),
   async created () {
     this.user = await AuthService.user();
+  },
+  computed: {
+    ...mapState(['title'])
   }
 };
 </script>

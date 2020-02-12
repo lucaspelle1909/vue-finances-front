@@ -1,6 +1,7 @@
+#import './RecordFragment.gql'
 # import * from './Operation.gql'
 
-query records(
+query RecordsByMonth(
   $month: String,
   $type: Operation,
   $accountsIds: [ID!],
@@ -12,24 +13,6 @@ query records(
     accountsIds: $accountsIds,
     categoriesIds: $categoriesIds
   ) {
-    id
-    type
-    amount
-    date
-    description
-    note
-    account {
-      id
-      description
-    }
-    category {
-      id
-      description
-      operation
-    }
-    user {
-      id
-      name
-    }
+    ...RecordFragment
   }
 }

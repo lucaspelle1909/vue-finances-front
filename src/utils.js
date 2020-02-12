@@ -1,7 +1,12 @@
 const errorHandler = (err, vm, info) => {
   console.log('Vue [error handler]', err, info);
 
-  const jwtErros = ['jwt malformed', 'jwt expired', 'jwt not active', 'invalid token'];
+  const jwtErros = [
+    'jwt malformed',
+    'jwt expired',
+    'jwt not active',
+    'invalid token'
+  ];
 
   if (jwtErros.some(jwtError => err.message.includes(jwtError))) {
     vm.$router.push({
@@ -17,7 +22,33 @@ const formatError = message => {
   return messageSplit[messageSplit.length - 1].trim();
 };
 
-export {
-  formatError,
-  errorHandler
+const groupBy = (array, key, makeCurrentKey) => {
+  return array.reduce((accumulated, item) => {
+    const currentKey = makeCurrentKey(item, key);
+
+    return {
+      ...accumulated,
+      [currentKey]: [
+        ...(accumulated[currentKey] || []),
+        item
+      ]
+    };
+  }, {});
 };
+
+const currencyFormatter = (
+  { locale, currency } = { locale: 'pt-BR', currency: 'BRL' }
+) => {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency
+  });
+};
+
+const registerVuexModule = (rootStore, moduleName, store) => {
+  if (!(moduleName in rootStore._modules.root._children)) {
+    rootStore.registerModule(moduleName, store);
+  }
+};
+
+export { currencyFormatter, groupBy, errorHandler, formatError, registerVuexModule };
