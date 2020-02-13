@@ -69,7 +69,7 @@
                     multiple
                     :items="accounts"
                     item-text="description"
-                    item-value="value"
+                    item-value="id"
                     :value="filters && filters.accountsIds"
                     @change="localFilters.accountsIds = $event"
                   ></v-select>
@@ -88,7 +88,7 @@
                     multiple
                     :items="categories"
                     item-text="description"
-                    item-value="value"
+                    item-value="id"
                     :value="filters && filters.categoriesIds"
                     @change="localFilters.categoriesIds = $event"
                   ></v-select>

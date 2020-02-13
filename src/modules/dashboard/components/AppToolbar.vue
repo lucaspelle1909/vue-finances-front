@@ -18,23 +18,46 @@
     <v-btn
       icon
       large
+      @click="showLogoutDialog = true"
     >
-      <v-avatar
-        size="32px"
-        item
-      >
-        <v-img
-          src="https://cdn.vuetifyjs.com/images/logos/logo.svg"
-          alt="Vuetify"
-        />
-      </v-avatar>
+      <v-icon>exit_to_app</v-icon>
     </v-btn>
+
+    <v-dialog
+      v-model="showLogoutDialog"
+      max-width="250px"
+    >
+      <v-card>
+        <v-card-title>
+          <h3 class="subheading">Deseja realmente sair?</h3>
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            text
+            small
+            @click="showLogoutDialog = false"
+          >
+            Não
+          </v-btn>
+          <v-btn
+            text
+            small
+            @click="logout"
+          >
+            Sim
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app-bar>
 </template>
 
 <script>
 import AuthService from '@/modules/auth/services/auth-service';
 import { mapState } from 'vuex';
+import apollo, { onLogout } from '@/plugins/apollo';
 
 export default {
   name: 'AppToolbar',
@@ -46,13 +69,20 @@ export default {
     event: 'hide'
   },
   data: () => ({
-    user: {}
+    user: {},
+    showLogoutDialog: false
   }),
   async created () {
     this.user = await AuthService.user();
   },
   computed: {
     ...mapState(['title'])
+  },
+  methods: {
+    async logout (e) {
+      this.$router.push('/login');
+      await onLogout(apollo);
+    }
   }
 };
 </script>

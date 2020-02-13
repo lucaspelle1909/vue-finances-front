@@ -8,7 +8,7 @@
       format="MM-YYYY"
       @monthChange="changeMonth"
       :color="toolbarColor"
-      :month="$route.query.month"
+      :month="month || $route.query.month"
       :showSlot="true"
     >
       <RecordsFilter @filter="filter" />
@@ -94,10 +94,11 @@ export default {
   ],
   data: () => ({
     records: [],
-    monthSubject$: new Subject(),
+    filtersSubject$: new Subject(),
     subscriptions: []
   }),
   computed: {
+    ...mapState(['filters', 'month']),
     mappedRecords () {
       return groupBy(this.records, 'date', (record, dateKey) => {
         return moment(record[dateKey].substr(0, 10)).format('DD/MM/YYYY');
@@ -120,17 +121,22 @@ export default {
     this.subscriptions.forEach(s => s.unsubscribe());
   },
   methods: {
+    ...mapActions(['setMonth']),
     changeMonth (month) {
       this.$router.push({
         path: this.$route.path,
         query: { month }
       }).catch(err => console.log(err));
 
-      this.monthSubject$.next({ month });
+      this.setMonth({ month });
+      this.filter();
     },
-    setRecords (month) {
+    filter () {
+      this.filtersSubject$.next({ month: this.month, ...this.filters });
+    },
+    setRecords () {
       this.subscriptions.push(
-        this.monthSubject$.pipe(
+        this.filtersSubject$.pipe(
           mergeMap(variables => RecordsService.records(variables))
         ).subscribe(records => (this.records = records))
       );
