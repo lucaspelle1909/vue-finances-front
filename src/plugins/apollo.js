@@ -27,7 +27,7 @@ const onLogout = async apollo => {
 };
 
 const link = new HttpLink({
-  uri: 'http://localhost:4000'
+  uri: process.env.VUE_APP_API_URL || 'http://localhost:4000'
 });
 
 const authMiddleware = new ApolloLink((operation, forward) => {
